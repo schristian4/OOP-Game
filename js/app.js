@@ -13,6 +13,7 @@ document.getElementById('btn__reset').addEventListener('click', function(event){
 });
 
 let key = document.querySelectorAll('.key')
+
 key.forEach(elemnt => elemnt.addEventListener('click', (event)=>{
     let selectedLetter = event.target.innerHTML;
     if(phrase.checkLetter(selectedLetter) == true){
