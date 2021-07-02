@@ -10,13 +10,14 @@ document.getElementById('btn__reset').addEventListener('click', function(event){
     game.startGame()
 
 });
-
+//Target all key class Elements on gameboard
 let key = document.querySelectorAll('.key')
 
+//Listener: Click onScreen keyboard
 key.forEach(elemnt => elemnt.addEventListener('click', (event)=>{
     phrase.handleInteraction(event.target)
 }))
-
+//Listener: Press keyboard to update game or Press enter to start/reset Game
 document.addEventListener('keypress', (event)=>{
     console.log(event.key)
     if(document.querySelector("#overlay").style.display == "none"){
