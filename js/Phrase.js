@@ -34,9 +34,25 @@ class Phrase{
     * Click on BUTTON Interactions
     ----------------------*/
     handleInteraction(letter){
-        //Update Active Phrase
-        this.showMatchedLetter(letter)
-        game.checkForWin()
+        if(letter !== null || letter !== undefined){
+            if(phrase.checkLetter(letter.innerHTML) == true){
+                //Update Active Phrase
+                console.log("letter", letter)
+                letter.classList.add("chosen");
+                letter.disabled = true
+                this.showMatchedLetter(letter)
+                game.checkForWin()
+                
+            }
+            else{
+                letter.classList.add(null, "wrong");
+                letter.disabled = true
+                this.updatePhrase(letter)
+                game.misses++
+                game.removeLife()
+                game.checkForWin()
+            }
+        }   
     }
 
     /*--------------------------------------------------------
@@ -46,7 +62,7 @@ class Phrase{
         //Match number of active letters in active phrase
         let tempPhrase = game.activePhrase;
         for (let i = 0; i < tempPhrase.length; i++) {
-            if(tempPhrase[i] == letter){
+            if(tempPhrase[i] == letter.innerHTML){
                 tempPhrase = this.remove_character(tempPhrase, i)
             }
         }
@@ -81,7 +97,7 @@ class Phrase{
         //console.log(game.activePhrase)
         let letterList = document.querySelectorAll('.letter')
         letterList.forEach(ele => {
-            if(ele.innerHTML == letter){
+            if(ele.innerHTML == letter.innerHTML){
                 ele.classList.replace("hide", "show")
             }  
         })

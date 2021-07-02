@@ -1,30 +1,45 @@
 /* Treehouse FSJS Techdegree
  * Project 4 - OOP Game App
  * app.js */
-
-const game = new Game();
-const phrase = new Phrase();
+let game = new Game();
+var phrase = new Phrase();
 
 //Click Start Game Button
 document.getElementById('btn__reset').addEventListener('click', function(event){
+    game = new Game();
     game.startGame()
-    phrase.addPhraseToDisplay()
-    event.target.parentNode.style.display = 'none';
+
 });
 
 let key = document.querySelectorAll('.key')
 
 key.forEach(elemnt => elemnt.addEventListener('click', (event)=>{
-    let selectedLetter = event.target.innerHTML;
-    if(phrase.checkLetter(selectedLetter) == true){
-        event.target.classList.add("chosen");
-        event.target.disabled = true
-        phrase.handleInteraction(selectedLetter)
-    }
-    else{
-        event.target.classList.add("wrong");
-        event.target.disabled = true
-        game.missed();
-    }
+    phrase.handleInteraction(event.target)
 }))
 
+document.addEventListener('keypress', (event)=>{
+    console.log(event.key)
+    if(document.querySelector("#overlay").style.display == "none"){
+        if(isCharacterALetter(event.key)){
+            for (let i = 0; i < key.length; i++) {
+                if(event.key == key[i].innerHTML && key[i].disabled != true)
+                phrase.handleInteraction(key[i])
+            } 
+        }   
+    }
+    // start or reset existing game
+    if(event.key === "Enter"){
+        if(game.inGameStatus == true){
+            game.startGame()
+        }
+        else{
+            game = new Game();
+            game.startGame()
+        }
+        
+    }
+})
+
+function isCharacterALetter(keyTarget) {
+    return keyTarget.toLowerCase() != keyTarget.toUpperCase()
+}

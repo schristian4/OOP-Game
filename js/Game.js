@@ -21,27 +21,27 @@ class Game{
         this.misses = 0;
         this.life = 5;
         this.resetStatus = false;
-        
+        this.inGameStatus = false;
     }
 
     /**
-     * Get Random Phrase
-     * Add Random Phrase to the Gameboard
-     * @param resetStatus (boolean) call reset Method: ignore
+     * Get Random Phrase and Add Random Phrase to the GameBoard
+     * Reset and Display GameBoard
      */
     startGame(){
-        let randomPhrase = game.getRandomPhrase();
+        console.log("GAME STARTED")
+        this.inGameStatus = true;
+        let randomPhrase = this.getRandomPhrase();
         this.addPhraseToGameBoard(randomPhrase)
-        if(this.resetStatus === true){
-            this.reset(this.configNumberOfLifes);
-        }
+        this.reset()
+        
+        phrase.addPhraseToDisplay()
+        document.getElementById('btn__reset').parentNode.style.display = 'none';
     }
-    /* Missed Method - Button click was incorrect */
+
+    //Missed Method - Button click was incorrect
     missed(){
-        this.misses++
         console.log(`You missed: i:${this.misses}`)
-        this.removeLife()
-        this.checkForWin()
     }
 
     /**
@@ -49,6 +49,10 @@ class Game{
      * @returns {string} Selected from phrase 
      */
     phrases(){
+        /* Short Phrase Array
+        let phraseArray = [ "chocolates", "eyes", "famous", "Fart", "vacation"];
+        */
+        // Long Phrase Array
         let phraseArray = [ "Life is like a box of chocolates", "Sometimes when I close my eyes I cant see", "Dont be stupid it might you famous", "Fart when someone hugs you it makes them feel strong", "I love my job only when im on vacation"];
         let lowerCaseArray = phraseArray.map(phrase => phrase.toLowerCase() )
         return lowerCaseArray;
@@ -72,6 +76,7 @@ class Game{
         if(this.life == 0 && this.misses == 5){
             this.gameOver(false)
         }
+        //check to see if all letters have been revealed && and if life has reached zero
         else if(document.querySelectorAll('.hide').length === 0 && this.life > 0){
             this.gameOver(true);
         }
@@ -80,18 +85,11 @@ class Game{
     /* Reset the game board */
     reset(){
         this.resetStatus = false;
-        this.deleteChild("ul")
-
-        // Configure Main Menu Display
-        phrase.addPhraseToDisplay()
-        overlayTarget.style.display = "none";
-
-        // Reset buttons
+        this.deletePhraseChild()
         document.querySelectorAll('.key').forEach(element => {
             element.className = "key"
             element.disabled = false
         })
-
         this.misses = 0;
         let oldLife = this.life;
         if(oldLife > 0){
@@ -102,8 +100,7 @@ class Game{
         this.life = 5;
     };
 
-    /*
-    * Removes a life from the scoreboard*/
+    /* Removes a life from the scoreboard*/
     removeLife() {
         document.querySelector("#scoreboard").firstElementChild.children
         if(this.life != 0 ){
@@ -113,8 +110,10 @@ class Game{
         let scoreboardCollection = document.querySelector("#scoreboard").firstElementChild
         scoreboardCollection.lastElementChild.remove()
     }
-    /*
-    * Add a life to the scoreboard */
+    /** 
+     * Add a life to the scoreboard 
+     * @param {numberOfLifes} number numebr of lives 
+     * */
     addLife(numberOfLifes){
         let targetScoreBoard = document.querySelector("#scoreboard").firstElementChild;
         for (let i = 0; i < numberOfLifes; i++) {
@@ -122,29 +121,35 @@ class Game{
         }
     }
 
-    /*
-    * Displays game over message
-    * GameWon - Whether or not the user won the game
+    /** 
+    * Displays game over messageWhether or not the user won the game
+    * @param {GameWon} value "True" you WON! : "False" you LOOSE!
     */
     gameOver(gameWon) {
         this.resetStatus = true;
-        function updateOverlay(message, addClass){
+        this.inGameStatus = false;
+        function updateOverlay(message, addClass, enterMessage){
             document.querySelector('#overlay').className = addClass;
             document.querySelector('#game-over-message').innerHTML = message; 
+            document.querySelector('#game-enter-message').innerHTML = enterMessage; 
             document.querySelector('#overlay').style.display = "inherit";
         }
         if(gameWon === true){
-            updateOverlay('YOU WON!', 'win');
+            updateOverlay('YOU WON!', 'win', 'Press "Enter" to Start Game');
+            this.reset();
         }
         else{
-            updateOverlay('Sorry, you lose!', 'lose');
+            updateOverlay('Sorry, you lose!', 'lose', 'Press "Enter" to Try Again');
+            this.reset();
         }
+        
     };
-    /*Set phrase value to class Object*/
+    //Set phrase value to class Object
     addPhraseToGameBoard(selectedPhrase){
         this.activePhrase = selectedPhrase;
     }
-    /*Console Log current Phrase*/
+    
+    //Console Log Active Phrase
     activePhrase(){
         console.log(`Active Phrase: ${this.activePhrase}`)
     }
@@ -159,25 +164,17 @@ class Game{
         return template.content.childNodes;
     }
 
-    /**
-     * @param {Object} target representing any number of sibling elements
-     */
-    deleteChild(target) {
-        var e = document.querySelector(target);
-        
-        //e.firstElementChild can be used.
-        var child = e.lastElementChild; 
-        while (child) {
-            e.removeChild(child);
-            child = e.lastElementChild;
-        }
+    //Delete Child Elements
+    deletePhraseChild() {
+        document.querySelector("#phrase").childNodes[1].remove();
+        document.querySelector("#phrase").appendChild(document.createElement("ul"));
     }
 
     /**
-     * @param {String} HTML_TYPE representing any number of sibling elements
-     * @param {String} content representing any number of sibling elements
-     * @param {String} styleClass representing any number of sibling elements
-     * @return {Object} HTML Object
+     * @param {String} HTML_TYPE string HTML Type ex. 'div'
+     * @param {String} content innerHTML Contents, must be string ex. 'hello'
+     * @param {array} styleClass Array of styles ex. ['style1', 'style2']
+     * @return {Object} HTML Object Element
      */
     createEle(HTML_TYPE, content, styleClass) {
         let newObject = document.createElement(HTML_TYPE);
