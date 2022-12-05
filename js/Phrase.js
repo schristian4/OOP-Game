@@ -1,6 +1,3 @@
-/* Treehouse FSJS Techdegree
- * Project 4 - OOP Game App
- * Phrase.js */
 
 const phraseTarget = document.querySelector("#phrase");
 class Phrase{
